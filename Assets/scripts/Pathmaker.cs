@@ -1,71 +1,90 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 // MAZE PROC GEN LAB
 // all students: complete steps 1-6, as listed in this file
 // optional: if you have extra time, complete the "extra tasks" to do at the very bottom
 
-// STEP 1: ======================================================================================
-// put this script on a Sphere... it will move around, and drop a path of floor tiles behind it **
+// STEP 1: ======================================================================================**
 
 public class Pathmaker : MonoBehaviour {
 
-// STEP 2: ============================================================================================
+// STEP 2: ============================================================================================**
 // translate the pseudocode below
 
-//	DECLARE CLASS MEMBER VARIABLES:
-//	Declare a private integer called counter that starts at 0; 		// counter var will track how many floor tiles I've instantiated
-//	Declare a public Transform called floorPrefab, assign the prefab in inspector;
-//	Declare a public Transform called pathmakerSpherePrefab, assign the prefab in inspector; 		// you'll have to make a "pathmakerSphere" prefab later
-	private int counter = 0;
-	public Transform floorPrefab;
+
+	private float counter = 0f;
+	public Transform floorPrefab1;
+	public Transform floorPrefab2;
+	public Transform floorPrefab3;
 	public Transform pathmakerSphereprefab;
+	public static int maxTiles; 
+	int numOfTiles = 0;
+	int LifeTime;
+	bool generate = false;
+
+	public Text myText;
 
 
-	void Update () {
-//		If counter is less than 50, then:
-//		Generate a random number from 0.0f to 1.0f;
-//		If random number is less than 0.25f, then rotate myself 90 degrees;
-//			... Else if number is 0.25f-0.5f, then rotate myself -90 degrees;
-//			... Else if number is 0.99f-1.0f, then instantiate a pathmakerSpherePrefab clone at my current position;
-//		// end elseIf
-		float num1 = 0f;
-		float distanceForward = 5f;
-		if (counter < 50) {
-			num1 = Random.Range (0.0f, 1.0f);
-		
-			if (num1 < 0.25f) {
-				transform.Rotate (0f, 90f, 0f);
-			} else if (num1 >= 0.25f && num1 <= 0.50f) {
-				transform.Rotate (0f, -90f, 0f);
-			} else if (num1 >= 0.99f) {
-				Instantiate (pathmakerSphereprefab, transform.position, transform.rotation);
-			}
+	void Start(){
+		LifeTime = Random.Range (50,300);
 
-
-
-//		Instantiate a floorPrefab clone at current position;
-
-			Instantiate (floorPrefab, transform.position, transform.rotation);
-			transform.position += distanceForward * transform.forward;
-			counter++;
-		} else {
-			Destroy (gameObject);
-		}
-
-//		Move forward ("forward" in local space, relative to the direction I'm facing) by 5 units;
-//			Increment counter;
-//			Else:
-//			Destroy my game object; 		// self destruct if I've made enough tiles already
 	}
 
-} // end of class scope
+	void Update () {
 
-// MORE STEPS BELOW!!!........
+			
+		if (Input.GetKey (KeyCode.Space)) {
+			generate = true;
+		}
 
 
+		float num1 = 0f;
+		float num2 = 0f;
+		float distanceForward = 5f;
 
+		if (maxTiles < 500) {
+			if (counter < LifeTime && generate) {
+				num1 = Random.Range (0.0f, 1.0f);
+				num2 = Random.Range (0.0f, 3f);
+				if (num1 < 0.25f) {
+					transform.Rotate (0f, 90f, 0f);
+				} else if (num1 >= 0.25f && num1 <= 0.50f) {
+					transform.Rotate (0f, -90f, 0f);
+				} else if (num1 >= 0.992f) {
+					Instantiate (pathmakerSphereprefab, transform.position, transform.rotation);
+				}
+				if (num2 < 1.0f) {
+					Instantiate (floorPrefab1, transform.position, transform.rotation);
+					transform.position += distanceForward * transform.forward;
+				} else if (num2 >= 1.0f && num2 < 2f) {
+					Instantiate (floorPrefab2, transform.position, transform.rotation);
+					transform.position += distanceForward * transform.forward;
+				} else if (num2 >= 2.0f && num2 <= 3.0f) {
+					Instantiate (floorPrefab3, transform.position, transform.rotation);
+					transform.position += distanceForward * transform.forward;
+				}
+				counter++;
+				maxTiles++;
+			} else if (counter >= LifeTime) {
+				Destroy (gameObject);
+
+			}
+		}
+		if(Input.GetKey(KeyCode.Return)){
+			Application.LoadLevel ("Start");
+		}
+	}
+
+		
+
+
+	
+
+}
+	
 
 // STEP 3: =====================================================================================
 // implement, test, and stabilize the system
