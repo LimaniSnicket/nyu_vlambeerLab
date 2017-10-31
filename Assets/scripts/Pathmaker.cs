@@ -7,7 +7,7 @@ using UnityEngine;
 // optional: if you have extra time, complete the "extra tasks" to do at the very bottom
 
 // STEP 1: ======================================================================================
-// put this script on a Sphere... it will move around, and drop a path of floor tiles behind it
+// put this script on a Sphere... it will move around, and drop a path of floor tiles behind it **
 
 public class Pathmaker : MonoBehaviour {
 
@@ -18,6 +18,9 @@ public class Pathmaker : MonoBehaviour {
 //	Declare a private integer called counter that starts at 0; 		// counter var will track how many floor tiles I've instantiated
 //	Declare a public Transform called floorPrefab, assign the prefab in inspector;
 //	Declare a public Transform called pathmakerSpherePrefab, assign the prefab in inspector; 		// you'll have to make a "pathmakerSphere" prefab later
+	private int counter = 0;
+	public Transform floorPrefab;
+	public Transform pathmakerSphereprefab;
 
 
 	void Update () {
@@ -27,8 +30,29 @@ public class Pathmaker : MonoBehaviour {
 //			... Else if number is 0.25f-0.5f, then rotate myself -90 degrees;
 //			... Else if number is 0.99f-1.0f, then instantiate a pathmakerSpherePrefab clone at my current position;
 //		// end elseIf
+		float num1 = 0f;
+		float distanceForward = 5f;
+		if (counter < 50) {
+			num1 = Random.Range (0.0f, 1.0f);
+		
+			if (num1 < 0.25f) {
+				transform.Rotate (0f, 90f, 0f);
+			} else if (num1 >= 0.25f && num1 <= 0.50f) {
+				transform.Rotate (0f, -90f, 0f);
+			} else if (num1 >= 0.99f) {
+				Instantiate (pathmakerSphereprefab, transform.position, transform.rotation);
+			}
+
+
 
 //		Instantiate a floorPrefab clone at current position;
+
+			Instantiate (floorPrefab, transform.position, transform.rotation);
+			transform.position += distanceForward * transform.forward;
+			counter++;
+		} else {
+			Destroy (gameObject);
+		}
 
 //		Move forward ("forward" in local space, relative to the direction I'm facing) by 5 units;
 //			Increment counter;
